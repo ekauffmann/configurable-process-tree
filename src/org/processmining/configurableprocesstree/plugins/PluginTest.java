@@ -1,37 +1,36 @@
 package org.processmining.configurableprocesstree.plugins;
 
+import org.processmining.configurableprocesstree.impl.AbstractConfigurableBlock;
+import org.processmining.configurableprocesstree.impl.CPTImpl;
+import org.processmining.configurableprocesstree.visualizer.CPTVisualizerObject;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.processtree.Block;
 import org.processmining.processtree.Edge;
-import org.processmining.processtree.ProcessTree;
 import org.processmining.processtree.Task;
-import org.processmining.processtree.editor.EditorObjectBeginner;
-import org.processmining.processtree.impl.AbstractBlock;
 import org.processmining.processtree.impl.AbstractTask;
-import org.processmining.processtree.impl.ProcessTreeImpl;
 
 public class PluginTest {
     @Plugin(
-            name = "Process Tree Test",
+            name = "Configurable Process Tree Visualizer",
             parameterLabels = { },
-            returnLabels = { "Process Tree Editor" },
-            returnTypes = { EditorObjectBeginner.class },
+            returnLabels = { "Configurable Process Tree" },
+            returnTypes = { CPTVisualizerObject.class },
             userAccessible = true,
-            help = "Start up editor"
+            help = "Start up visualizer"
     )
     @UITopiaVariant(
-            affiliation = UITopiaVariant.EHV,
+            affiliation = "DCC, Universidad de Chile",
             author = "Elisa",
             email = "ekauffma@dcc.uchile.cl"
     )
-    public EditorObjectBeginner generateTestTree(PluginContext context) {
+    public CPTVisualizerObject generateTestTree(PluginContext context) {
         // Process tree
-        ProcessTree tree = new ProcessTreeImpl("Test Process Tree");
+        CPTImpl tree = new CPTImpl();
 
         // Root: Sequence operator
-        Block.Seq seq = new AbstractBlock.Seq("seq");
+        Block.Seq seq = new AbstractConfigurableBlock.Seq("seq");
         seq.setProcessTree(tree);
         tree.addNode(seq);
         tree.setRoot(seq);
@@ -47,7 +46,7 @@ public class PluginTest {
         tree.addEdge(edgeA);
 
         // And operator
-        Block.And and = new AbstractBlock.And("and");
+        Block.And and = new AbstractConfigurableBlock.And("and");
         and.setProcessTree(tree);
         tree.addNode(and);
 
@@ -86,6 +85,6 @@ public class PluginTest {
         manC.addIncomingEdge(edgeD);
         tree.addEdge(edgeD);
 
-        return new EditorObjectBeginner(tree);
+        return new CPTVisualizerObject(tree);
     }
 }
