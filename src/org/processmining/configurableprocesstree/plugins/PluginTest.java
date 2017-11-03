@@ -1,10 +1,6 @@
 package org.processmining.configurableprocesstree.plugins;
 
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.layout.mxIGraphLayout;
-import com.mxgraph.view.mxGraph;
-import org.processmining.configurableprocesstree.models.MyNode;
-import org.processmining.configurableprocesstree.models.graphmodels.HelloWorldGraph;
+import org.processmining.configurableprocesstree.cptimpl.graphmodels.HelloWorldGraph;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;

@@ -1,9 +1,12 @@
-package org.processmining.configurableprocesstree.models.graphmodels;
+package org.processmining.configurableprocesstree.cptimpl.graphmodels;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
-import org.processmining.configurableprocesstree.models.MyNode;
+import org.processmining.configurableprocesstree.cptimpl.*;
+import org.processmining.configurableprocesstree.cptimpl.operators.And;
+import org.processmining.configurableprocesstree.cptimpl.operators.Or;
+import org.processmining.configurableprocesstree.cptimpl.operators.Xor;
 
 import javax.swing.*;
 
@@ -20,14 +23,18 @@ public class HelloWorldGraph extends JFrame {
             }
         };
         Object parent = graph.getDefaultParent();
-        MyNode root = new MyNode("Nodo 1");
-        MyNode n2 = new MyNode("Nodo 2");
-        MyNode n3 = new MyNode("Nodo 3");
-        MyNode n4 = new MyNode("Nodo 4");
+        ICPTNode root = new And();
+        ICPTNode n2 = new And();
+        ICPTNode n3 = new Or();
+        ICPTNode n4 = new Or();
+        ICPTNode n5 = new Xor();
+        ICPTNode task = new Task("Task 1");
 
-        root.addChildren(n2);
-        root.addChildren(n3);
-        n3.addChildren(n4);
+        root.addChild(n2);
+        root.addChild(n3);
+        n2.addChild(n4);
+        n3.addChild(n5);
+        n3.addChild(task);
 
         graph.getModel().beginUpdate();
         try {
@@ -45,7 +52,8 @@ public class HelloWorldGraph extends JFrame {
         graphComponent.setConnectable(false);
 
         graph.setCellsEditable(false);
-        graph.setResetEdgesOnMove(true);
+        graph.setCellsSelectable(false);
+        graph.setCellsLocked(true);
 
         getContentPane().add(graphComponent);
     }

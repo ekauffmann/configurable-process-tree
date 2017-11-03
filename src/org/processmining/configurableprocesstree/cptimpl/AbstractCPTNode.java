@@ -1,42 +1,36 @@
-package org.processmining.configurableprocesstree.models;
+package org.processmining.configurableprocesstree.cptimpl;
 
 import com.mxgraph.view.mxGraph;
+import org.ujmp.core.collections.ArrayIndexList;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MyNode {
+public abstract class AbstractCPTNode implements ICPTNode {
     private String label;
-    private List<MyNode> children;
+    private List<ICPTNode> children;
 
-    public MyNode(String l) {
-        this.label = l;
-        this.children = new ArrayList<MyNode>();
-    };
-
-    public String getLabel() {
-        return label;
+    public AbstractCPTNode(String label) {
+        this.label = label;
+        this.children = new ArrayIndexList<ICPTNode>();
     }
 
-    public void setLabel(String l) {
-        this.label = l;
-    }
-
+    @Override
     public String toString() {
-        return label;
+        return this.label;
     }
 
-    public void addChildren(MyNode child) {
+    @Override
+    public void addChild(ICPTNode child) {
         this.children.add(child);
     }
 
+    @Override
     public Object addToGraphModel(mxGraph graph, Object parent) {
         Object currentNode = graph.insertVertex(parent, null, toString(), 0, 0, 50, 50);
-        for(MyNode child : children) {
+        for(ICPTNode child : children) {
             Object childNode = child.addToGraphModel(graph, parent);
             graph.insertEdge(parent, null, "", currentNode, childNode);
         }
-
         return currentNode;
     }
 }
