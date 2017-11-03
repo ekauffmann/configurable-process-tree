@@ -19,6 +19,10 @@ public abstract class AbstractCPTNode implements ICPTNode {
         return this.label;
     }
 
+    public List<ICPTNode> getChildren() {
+        return this.children;
+    }
+
     @Override
     public void addChild(ICPTNode child) {
         this.children.add(child);

@@ -36,9 +36,11 @@ public class HelloWorldGraph extends JFrame {
         n3.addChild(n5);
         n3.addChild(task);
 
+        ICPTNode bigTree = buildBigBinaryTree(8);
+
         graph.getModel().beginUpdate();
         try {
-            root.addToGraphModel(graph, parent);
+            bigTree.addToGraphModel(graph, parent);
         } finally {
             graph.getModel().endUpdate();
         }
@@ -56,6 +58,25 @@ public class HelloWorldGraph extends JFrame {
         graph.setCellsLocked(true);
 
         getContentPane().add(graphComponent);
+    }
+
+    private ICPTNode buildBigBinaryTree(int levels) {
+        ICPTNode root = new And();
+
+        return addManyNodes(levels, root);
+    }
+
+    private ICPTNode addManyNodes(int levels, ICPTNode node) {
+        if (levels <= 1) return node;
+        else {
+            ICPTNode leftChild = new And();
+            ICPTNode rightChild = new And();
+            node.addChild(leftChild);
+            node.addChild(rightChild);
+            addManyNodes(levels - 1, leftChild);
+            addManyNodes(levels - 1, rightChild);
+            return node;
+        }
     }
 
     public static void main(String[] args) {
