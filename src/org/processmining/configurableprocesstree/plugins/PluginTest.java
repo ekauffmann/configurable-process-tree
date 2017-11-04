@@ -19,7 +19,7 @@ public class PluginTest {
             author = "Elisa",
             email = "ekauffma@dcc.uchile.cl"
     )
-    public HelloWorldGraph generateTestTree(PluginContext context) {
+    public HelloWorldGraph generateTestTree(PluginContext context) throws Exception {
         return new HelloWorldGraph();
     }
 }
