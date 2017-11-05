@@ -1,4 +1,4 @@
-package org.processmining.configurableprocesstree.parser.nodefactory;
+package org.processmining.configurableprocesstree.parser.nodefactories;
 
 import org.processmining.configurableprocesstree.cptimpl.ICPTNode;
 

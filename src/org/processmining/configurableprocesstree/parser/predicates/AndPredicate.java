@@ -1,4 +1,4 @@
-package org.processmining.configurableprocesstree.parser.predicate;
+package org.processmining.configurableprocesstree.parser.predicates;
 
 public class AndPredicate implements Predicate {
     @Override

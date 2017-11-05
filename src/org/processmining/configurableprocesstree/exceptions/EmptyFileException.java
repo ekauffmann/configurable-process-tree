@@ -1,7 +1,5 @@
 package org.processmining.configurableprocesstree.exceptions;
 
-import java.util.EmptyStackException;
-
 public class EmptyFileException extends Exception {
     private String filename;
 

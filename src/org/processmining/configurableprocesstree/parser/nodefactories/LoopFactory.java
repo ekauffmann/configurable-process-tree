@@ -1,7 +1,6 @@
-package org.processmining.configurableprocesstree.parser.nodefactory;
+package org.processmining.configurableprocesstree.parser.nodefactories;
 
 import org.processmining.configurableprocesstree.cptimpl.ICPTNode;
-import org.processmining.configurableprocesstree.cptimpl.operators.And;
 import org.processmining.configurableprocesstree.cptimpl.operators.Loop;
 
 import java.util.ArrayList;

@@ -1,17 +1,15 @@
 package org.processmining.configurableprocesstree.parser;
 
+import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
 import org.processmining.configurableprocesstree.cptimpl.ICPTNode;
 import org.processmining.configurableprocesstree.exceptions.EmptyFileException;
 import org.processmining.configurableprocesstree.exceptions.IncorrectCPTStringFormat;
 import org.processmining.configurableprocesstree.exceptions.MoreThanOneLineFileException;
 import org.processmining.configurableprocesstree.exceptions.RuleNotFoundException;
-import org.processmining.configurableprocesstree.parser.nodefactory.NodeFactory;
-import org.processmining.configurableprocesstree.parser.predicate.Predicate;
+import org.processmining.configurableprocesstree.parser.nodefactories.NodeFactory;
+import org.processmining.configurableprocesstree.parser.predicates.Predicate;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -35,21 +33,21 @@ public class CPTParser {
         this.namesStack = new Stack<>();
         this.childrenCounterStack = new Stack<>();
         this.nodesStack = new Stack<>();
-        this.nodeDataPattern = Pattern.compile("([A-Z0-9]+)(?>\\[(.*)\\])?");
+        this.nodeDataPattern = Pattern.compile("([A-Z0-9]+)(?>\\[(.*)\\])");
 
     }
 
-    public ICPTNode parseTreeFromFile(String filename) throws EmptyFileException, IOException, MoreThanOneLineFileException, RuleNotFoundException, IncorrectCPTStringFormat {
-        String line = readFile(filename);
-        return parseString(line);
+    public ConfigurableProcessTree parseTreeFromFile(InputStream inputStream, String filename) throws EmptyFileException, IOException, MoreThanOneLineFileException, RuleNotFoundException, IncorrectCPTStringFormat {
+        String line = readFile(inputStream, filename);
+        ICPTNode root = parseString(line);
+        return new ConfigurableProcessTree(root);
     }
 
-    private String readFile(String filename) throws IOException, EmptyFileException, MoreThanOneLineFileException {
+    private String readFile(InputStream inputStream, String filename) throws IOException, EmptyFileException, MoreThanOneLineFileException {
         ArrayList<String> lines = new ArrayList<>();
         String line;
 
-        FileReader fileReader = new FileReader(filename);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         while((line = bufferedReader.readLine()) != null) {
             lines.add(line);
@@ -65,7 +63,7 @@ public class CPTParser {
         return lines.get(0);
     }
 
-    public ICPTNode parseString(String str) throws IncorrectCPTStringFormat, RuleNotFoundException {
+    private ICPTNode parseString(String str) throws IncorrectCPTStringFormat, RuleNotFoundException {
         childrenCounterStack.push(0);
         StringBuilder nodeData = new StringBuilder();
 
