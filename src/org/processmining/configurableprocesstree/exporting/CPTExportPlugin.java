@@ -15,6 +15,7 @@ import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +72,9 @@ public class CPTExportPlugin {
                                 return canvas;
                             }
                         });
-        mxUtils.writeFile(mxXmlUtils.getXml(canvas.getDocument()), file.getPath());
+        String wrongXML = mxXmlUtils.getXml(canvas.getDocument());
+        String correctXML = wrongXML.replaceAll("xmlns=\"\"", "");
+        mxUtils.writeFile(correctXML, file.getPath());
+
     }
 }

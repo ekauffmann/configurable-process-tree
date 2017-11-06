@@ -21,6 +21,6 @@ public class ApplyConfigurationsPlugin {
             author = "Elisa Kauffmann F.",
             email = "ekauffma@dcc.uchile.cl"
     )
-    public  applyConfigurations(PluginContext context, ConfigurableProcessTree cpt){
+    public void  applyConfigurations(PluginContext context, ConfigurableProcessTree cpt){
     }
 }
