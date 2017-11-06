@@ -53,11 +53,6 @@ public class CPTExportPlugin {
         mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         layout.execute(graph.getDefaultParent());
 
-
-        mxGraphComponent graphComponent = new mxGraphComponent(graph);
-        graphComponent.setToolTips(true);
-        graphComponent.setConnectable(false);
-
         graph.setCellsEditable(false);
         graph.setCellsSelectable(false);
         graph.setCellsLocked(true);

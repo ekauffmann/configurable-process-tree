@@ -1,4 +1,4 @@
-package org.processmining.configurableprocesstree.cptimpl;
+package org.processmining.configurableprocesstree.cptimpl.nodes;
 
 import com.mxgraph.view.mxGraph;
 

@@ -1,7 +1,7 @@
 package org.processmining.configurableprocesstree.parser;
 
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
-import org.processmining.configurableprocesstree.cptimpl.ICPTNode;
+import org.processmining.configurableprocesstree.cptimpl.nodes.ICPTNode;
 import org.processmining.configurableprocesstree.exceptions.EmptyFileException;
 import org.processmining.configurableprocesstree.exceptions.IncorrectCPTStringFormat;
 import org.processmining.configurableprocesstree.exceptions.MoreThanOneLineFileException;

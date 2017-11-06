@@ -20,28 +20,11 @@ public class CPTVisualizer {
     @Visualizer
     public JComponent visualize(UIPluginContext context, ConfigurableProcessTree cpt) {
         JFrame frame = new JFrame();
-        mxGraph graph = new mxGraph();
-
-        Object parent = graph.getDefaultParent();
-
-        graph.getModel().beginUpdate();
-        try {
-            cpt.getRoot().addToGraphModel(graph, parent);
-        } finally {
-            graph.getModel().endUpdate();
-        }
-
-        mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-        layout.execute(graph.getDefaultParent());
-
+        mxGraph graph = cpt.buildMxGraph();
 
         mxGraphComponent graphComponent = new mxGraphComponent(graph);
         graphComponent.setToolTips(true);
         graphComponent.setConnectable(false);
-
-        graph.setCellsEditable(false);
-        graph.setCellsSelectable(false);
-        graph.setCellsLocked(true);
 
         frame.getContentPane().add(graphComponent);
 
