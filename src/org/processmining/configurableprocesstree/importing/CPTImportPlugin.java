@@ -1,4 +1,4 @@
-package org.processmining.configurableprocesstree.cptimport;
+package org.processmining.configurableprocesstree.importing;
 
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
 import org.processmining.configurableprocesstree.parser.CPTParser;

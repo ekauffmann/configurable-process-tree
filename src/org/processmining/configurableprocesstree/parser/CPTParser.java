@@ -23,8 +23,8 @@ public class CPTParser {
     private Stack<Integer> childrenCounterStack;
     private Stack<ICPTNode> nodesStack;
     private Pattern nodeDataPattern;
-    private char nodeStart = "<".charAt(0);
-    private char nodeEnd = ">".charAt(0);
+    private char nodeStart = "(".charAt(0);
+    private char nodeEnd = ")".charAt(0);
     private char childrenStart = "{".charAt(0);
     private char childrenEnd = "}".charAt(0);
 

@@ -4,7 +4,6 @@ import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
-import org.processmining.configurableprocesstree.cptimpl.graphmodels.HelloWorldGraph;
 import org.processmining.contexts.uitopia.UIPluginContext;
 import org.processmining.contexts.uitopia.annotations.Visualizer;
 import org.processmining.framework.plugin.annotations.Plugin;
