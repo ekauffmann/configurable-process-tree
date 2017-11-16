@@ -5,18 +5,18 @@ import com.mxgraph.view.mxGraph;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCPTNode implements ICPTNode {
+public abstract class AbstractCPTNode implements CPTNode {
     private String name;
-    private String label;
-    private List<ICPTNode> children;
+    private String[] label;
+    private List<CPTNode> children;
 
     public AbstractCPTNode(String name) {
         this.name = name;
-        this.label = "[]";
+        this.label = new String[]{};
         this.children = new ArrayList<>();
     }
 
-    public AbstractCPTNode(String name, String label, ArrayList<ICPTNode> children) {
+    public AbstractCPTNode(String name, String[] label, ArrayList<CPTNode> children) {
         this.name = name;
         this.label = label;
         this.children = children;
@@ -27,34 +27,38 @@ public abstract class AbstractCPTNode implements ICPTNode {
         this.name = name;
     }
 
-    public void setLabel(String label) {
-        this.label = "[" + label + "]";
+    public void setLabel(String[] label) {
+        this.label = label;
     }
 
     @Override
     public String toString() {
-        return this.name + "\n" + this.label;
+        StringBuilder builder = new StringBuilder();
+        for(String s : this.label) {
+            builder.append(s);
+        }
+        return this.name + "\n" + builder.toString();
     }
 
     @Override
-    public List<ICPTNode> getChildren() {
+    public List<CPTNode> getChildren() {
         return this.children;
     }
 
     @Override
-    public void addChild(ICPTNode child) {
+    public void addChild(CPTNode child) {
         this.children.add(child);
     }
 
     @Override
-    public void addChildren(List<ICPTNode> children) {
+    public void addChildren(List<CPTNode> children) {
         this.children.addAll(children);
     }
 
     @Override
     public Object addToGraphModel(mxGraph graph, Object parent) {
-        Object currentNode = graph.insertVertex(parent, null, toString(), 0, 0, 50, 50);
-        for(ICPTNode child : children) {
+        Object currentNode = graph.insertVertex(parent, null, this.toString(), 0, 0, 50, 50);
+        for(CPTNode child : children) {
             Object childNode = child.addToGraphModel(graph, parent);
             graph.insertEdge(parent, null, "", currentNode, childNode);
         }

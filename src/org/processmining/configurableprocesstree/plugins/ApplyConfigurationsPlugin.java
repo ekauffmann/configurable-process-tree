@@ -22,5 +22,6 @@ public class ApplyConfigurationsPlugin {
             email = "ekauffma@dcc.uchile.cl"
     )
     public void  applyConfigurations(PluginContext context, ConfigurableProcessTree cpt){
+
     }
 }

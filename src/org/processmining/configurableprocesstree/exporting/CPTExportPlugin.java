@@ -55,7 +55,7 @@ public class CPTExportPlugin {
         layout.execute(graph.getDefaultParent());
 
         graph.setCellsEditable(false);
-        graph.setCellsSelectable(false);
+        graph.setCellsSelectable(true);
         graph.setCellsLocked(true);
 
         mxSvgCanvas canvas = (mxSvgCanvas) mxCellRenderer

@@ -2,17 +2,17 @@ package org.processmining.configurableprocesstree.cptimpl;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.view.mxGraph;
-import org.processmining.configurableprocesstree.cptimpl.nodes.ICPTNode;
+import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
 
 
 public class ConfigurableProcessTree {
-    private ICPTNode root;
+    private CPTNode root;
 
-    public ConfigurableProcessTree(ICPTNode root) {
+    public ConfigurableProcessTree(CPTNode root) {
         this.root = root;
     }
 
-    public ICPTNode getRoot() {
+    public CPTNode getRoot() {
         return root;
     }
 

@@ -4,34 +4,20 @@ import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxDomUtils;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
+import org.processmining.configurableprocesstree.parser.CPTParser;
+import org.processmining.configurableprocesstree.parser.NodeInfo;
 
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Asdf {
     public static void main(String[] args) {
-        Pattern p = Pattern.compile("([A-Z0-9]+)(\\[.*\\])?");
-        Matcher m = p.matcher("TAU[]");
-        m.matches();
+        Stack<NodeInfo> n = new Stack<>();
+        n.push(new NodeInfo("primero", new String[]{}));
+        n.push(new NodeInfo("segundo", new String[]{}));
+        n.peek().incrementChildren();
+        System.out.println(n.toString());
     }
-//
-//    mxSvgCanvas canvas = (mxSvgCanvas) mxCellRenderer
-//            .drawCells(graph, null, 1, null,
-//                    new mxCellRenderer.CanvasFactory()
-//                    {
-//                        public mxICanvas createCanvas(
-//                                int width, int height)
-//                        {
-//                            mxSvgCanvas canvas = new mxSvgCanvas(
-//                                    mxDomUtils.createSvgDocument(
-//                                            width, height));
-//                            canvas.setEmbedded(true);
-//
-//                            return canvas;
-//                        }
-//
-//                    });
-//
-//						mxUtils.writeFile(mxXmlUtils.getXml(canvas.getDocument()),
-//    filename);
 }

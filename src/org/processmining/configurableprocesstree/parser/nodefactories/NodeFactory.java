@@ -1,9 +1,9 @@
 package org.processmining.configurableprocesstree.parser.nodefactories;
 
-import org.processmining.configurableprocesstree.cptimpl.nodes.ICPTNode;
+import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
 
 import java.util.ArrayList;
 
 public interface NodeFactory {
-    ICPTNode buildNode(String name, String label, ArrayList<ICPTNode> children);
+    CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children);
 }

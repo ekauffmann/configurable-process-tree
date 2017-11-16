@@ -1,7 +1,7 @@
 package org.processmining.configurableprocesstree.parser;
 
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
-import org.processmining.configurableprocesstree.cptimpl.nodes.ICPTNode;
+import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
 import org.processmining.configurableprocesstree.exceptions.EmptyFileException;
 import org.processmining.configurableprocesstree.exceptions.IncorrectCPTStringFormat;
 import org.processmining.configurableprocesstree.exceptions.MoreThanOneLineFileException;
@@ -19,27 +19,29 @@ import java.util.regex.Pattern;
 
 public class CPTParser {
     private HashMap<Predicate, NodeFactory> rules;
-    private Stack<String> namesStack;
-    private Stack<Integer> childrenCounterStack;
-    private Stack<ICPTNode> nodesStack;
-    private Pattern nodeDataPattern;
-    private char nodeStart = "(".charAt(0);
-    private char nodeEnd = ")".charAt(0);
-    private char childrenStart = "{".charAt(0);
-    private char childrenEnd = "}".charAt(0);
+    private Pattern filePattern;
+    private Pattern labelsPattern;
+    private Stack<NodeInfo> nodeInfos;
+    private Stack<String[]> labelsStack;
+    private Stack<CPTNode> nodesStack;
+    private char childrenStart = "(".charAt(0);
+    private char childrenEnd = ")".charAt(0);
+    private char nodesCommaSeparator = ",".charAt(0);
+    private char nodesSpaceSeparator = " ".charAt(0);
+    private char leafNameStart = ":".charAt(0);
 
     public CPTParser(HashMap<Predicate, NodeFactory> rules) {
         this.rules = rules;
-        this.namesStack = new Stack<>();
-        this.childrenCounterStack = new Stack<>();
+        this.nodeInfos = new Stack<>();
+        this.labelsStack= new Stack<>();
         this.nodesStack = new Stack<>();
-        this.nodeDataPattern = Pattern.compile("([A-Z0-9]+)(?>\\[(.*)\\])");
-
+        this.filePattern = Pattern.compile("(.+)\\s\\[(.+)\\]");
+        this.labelsPattern = Pattern.compile("(?>\\[([^\\[\\]]+)\\])");
     }
 
     public ConfigurableProcessTree parseTreeFromFile(InputStream inputStream, String filename) throws EmptyFileException, IOException, MoreThanOneLineFileException, RuleNotFoundException, IncorrectCPTStringFormat {
         String line = readFile(inputStream, filename);
-        ICPTNode root = parseString(line);
+        CPTNode root = parseString(line);
         return new ConfigurableProcessTree(root);
     }
 
@@ -53,7 +55,6 @@ public class CPTParser {
             lines.add(line);
         }
 
-
         if (lines.isEmpty()) {
             throw new EmptyFileException(filename);
         } else if (lines.size() > 1) {
@@ -63,71 +64,127 @@ public class CPTParser {
         return lines.get(0);
     }
 
-    private ICPTNode parseString(String str) throws IncorrectCPTStringFormat, RuleNotFoundException {
-        childrenCounterStack.push(0);
-        StringBuilder nodeData = new StringBuilder();
+    private CPTNode parseString(String str) throws IncorrectCPTStringFormat, RuleNotFoundException {
+        Matcher matcher = this.filePattern.matcher(str);
+        if (!matcher.matches()) {
+            throw new IncorrectCPTStringFormat();
+        }
 
+        String treeStructure = matcher.group(1);
+        ArrayList<String[]> labels = this.getLabelsFromConfigurations(matcher.group(2));
+        labelsStack.addAll(labels);
+        StringBuilder currentNodeName = new StringBuilder();
 
-        for (int index = 0; index < str.length(); index++) {
-            char c = str.charAt(index);
+        // dummy initial node info to prevent stack underflow at the end
+        nodeInfos.push(new NodeInfo("", new String[]{}));
 
-            // new node is introduced. Add as a child to the parent counter for children and get node name
-            if (nodeStart == c) {
-                int lastCounter = childrenCounterStack.pop();
-                childrenCounterStack.push(lastCounter+1);
+        for (int index = 0; index < treeStructure.length(); index++) {
+            char c = treeStructure.charAt(index);
 
-                // get name and label, push to stack and reset variable
-                while (str.charAt(index+1) != childrenStart) {
-                    index++;
-                    nodeData.append(str.charAt(index));
-                }
-                namesStack.push(nodeData.toString());
-                nodeData = new StringBuilder();
-            }
-
-            // put a new children counter to the stack
-            else if (childrenStart == c) {
-                childrenCounterStack.push(0);
-            }
-
-            // pop necessary data from stacks, build node, and push it to node stack
-            else if (nodeEnd == c) {
-                int numberOfChildren;
-                String data;
+            // start array of children. Push node name, label and new children counter to stacks
+            if ( childrenStart == c) {
                 try {
-                    numberOfChildren = childrenCounterStack.pop();
-                    data = namesStack.pop();
+                    nodeInfos.push(new NodeInfo(currentNodeName.toString(), labelsStack.pop()));
+                    currentNodeName = new StringBuilder();
                 } catch (EmptyStackException e) {
                     throw new IncorrectCPTStringFormat();
                 }
-
-                ArrayList<ICPTNode> children = new ArrayList<>();
-                for (int i = 0; i < numberOfChildren; i++) {
-                    try {
-                        // add to first position of array
-                        children.add(0, nodesStack.pop());
-                    } catch (EmptyStackException e) {
-                        throw new IncorrectCPTStringFormat();
-                    }
-                }
-                nodesStack.push(parseNode(data, children));
             }
+
+            // this is a  leaf. Forget the "LEAF" part and start collecting the numbers.
+            // when a "," or a ")" is reached, create new leaf, push it directly and increment counter
+            else if ( leafNameStart == c ) {
+                try {
+
+                    currentNodeName = new StringBuilder();
+                    char nextChar = treeStructure.charAt(index+1);
+                    while (nextChar != nodesCommaSeparator && nextChar != childrenEnd) {
+                        currentNodeName.append(nextChar);
+                        index++;
+                        nextChar = treeStructure.charAt(index+1);
+                    }
+                    CPTNode leaf = parseNode(currentNodeName.toString(), labelsStack.pop(), new ArrayList<>());
+                    nodesStack.push(leaf);
+                    nodeInfos.peek().incrementChildren();
+
+                    currentNodeName = new StringBuilder();
+                } catch (EmptyStackException e) {
+                    throw new IncorrectCPTStringFormat();
+                }
+            }
+
+            // pop necessary data from stacks, build node, and push it to node stack
+            else if ( childrenEnd == c ) {
+                try {
+                    NodeInfo nodeInfo = nodeInfos.pop();
+                    ArrayList<CPTNode> children = new ArrayList<>();
+                    for (int i = 0; i < nodeInfo.getNumberOfChildren(); i++) {
+                        // add to first position of array. As it is popped from a stack, the order is reversed
+                        children.add(0, nodesStack.pop());
+                    }
+                    nodesStack.push(parseNode(nodeInfo.getName(), nodeInfo.getLabel(), children));
+                    nodeInfos.peek().incrementChildren();
+                } catch (EmptyStackException e) {
+                    throw new IncorrectCPTStringFormat();
+                }
+            }
+
+            else if ( nodesCommaSeparator == c || nodesSpaceSeparator == c) {
+                // this case only happens for inner nodes, so there is nothing to do. Continue checking next character.
+                continue;
+            }
+
+            else {
+                // add this char to the current node name
+                currentNodeName.append(c);
+            }
+
         }
         // check if parsing process went ok, i.e. stacks are empty and nodesStack contains tree root
-        if (namesStack.isEmpty() && childrenCounterStack.size() == 1 && nodesStack.size() == 1) {
+        if (nodeInfos.size() == 1 && labelsStack.isEmpty() && nodesStack.size() == 1) {
             return nodesStack.pop();
         } else {
             throw new IncorrectCPTStringFormat();
         }
     }
 
-    private ICPTNode parseNode(String data, ArrayList<ICPTNode> children) throws IncorrectCPTStringFormat, RuleNotFoundException {
-        ICPTNode node = null;
-        Matcher matcher = this.nodeDataPattern.matcher(data);
-        if (!matcher.matches()) throw new IncorrectCPTStringFormat();
+    private ArrayList<String[]> getLabelsFromConfigurations(String configsStr) {
+        // arraylist of all configurations
+        ArrayList<String[]> configs = new ArrayList<>();
+        Matcher matcher = this.labelsPattern.matcher(configsStr);
 
-        String name = matcher.group(1);
-        String label = matcher.group(2);
+        while (matcher.find()) {
+            String aLabel = matcher.group(1).replace(" ", "");
+            configs.add(aLabel.split(","));
+        }
+
+        // arraylist of labels, one for each node
+        ArrayList<String[]> labels = new ArrayList<>();
+        int numberOfConfigs = configs.size();
+
+        // if there are no configs specified in the file, return empty arraylist
+        if (numberOfConfigs > 0) {
+            // total number of nodes is the size of each config. Just get the size of the first one
+            int numberOfNodes = configs.get(0).length;
+
+            for (int labelIndex = 0; labelIndex < numberOfNodes; labelIndex++ ) {
+                // each node label must have the same size. As many values as configs
+                String[] label = new String[numberOfConfigs];
+
+                int auxLabelIndex = 0;
+                // iterate through all configs, getting the element at the i-th position for the i-th node (labelIndex-th node)
+                for (String[] config : configs) {
+                    label[auxLabelIndex] = config[labelIndex];
+                    auxLabelIndex++;
+                }
+                labels.add(label);
+            }
+        }
+        return labels;
+    }
+
+    private CPTNode parseNode(String name, String[] label, ArrayList<CPTNode> children) throws RuleNotFoundException {
+        CPTNode node = null;
 
         for (Predicate predicate : rules.keySet()) {
             if (predicate.checkPredicate(name)) {
@@ -135,7 +192,6 @@ public class CPTParser {
                 break;
             }
         }
-
         if (node == null) throw new RuleNotFoundException(name);
 
         return node;
