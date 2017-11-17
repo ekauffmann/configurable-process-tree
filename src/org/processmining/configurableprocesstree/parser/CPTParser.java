@@ -10,6 +10,7 @@ import org.processmining.configurableprocesstree.parser.nodefactories.NodeFactor
 import org.processmining.configurableprocesstree.parser.predicates.Predicate;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import java.util.regex.Pattern;
 public class CPTParser {
     private HashMap<Predicate, NodeFactory> rules;
     private Pattern filePattern;
-    private Pattern labelsPattern;
+    private Pattern configPattern;
     private Stack<NodeInfo> nodeInfos;
     private Stack<String[]> labelsStack;
     private Stack<CPTNode> nodesStack;
@@ -36,13 +37,17 @@ public class CPTParser {
         this.labelsStack= new Stack<>();
         this.nodesStack = new Stack<>();
         this.filePattern = Pattern.compile("(.+)\\s\\[(.+)\\]");
-        this.labelsPattern = Pattern.compile("(?>\\[([^\\[\\]]+)\\])");
+        this.configPattern = Pattern.compile("(?>\\[([^\\[\\]]+)\\])");
     }
 
     public ConfigurableProcessTree parseTreeFromFile(InputStream inputStream, String filename) throws EmptyFileException, IOException, MoreThanOneLineFileException, RuleNotFoundException, IncorrectCPTStringFormat {
         String line = readFile(inputStream, filename);
-        CPTNode root = parseString(line);
-        return new ConfigurableProcessTree(root);
+        String[] tokens = parseLine(line);
+        String treeStructure = tokens[0];
+        ArrayList<String> configurations = getConfigurations(tokens[1]);
+        CPTNode root = parseString(treeStructure, configurations);
+
+        return new ConfigurableProcessTree(root, filename, configurations);
     }
 
     private String readFile(InputStream inputStream, String filename) throws IOException, EmptyFileException, MoreThanOneLineFileException {
@@ -64,14 +69,18 @@ public class CPTParser {
         return lines.get(0);
     }
 
-    private CPTNode parseString(String str) throws IncorrectCPTStringFormat, RuleNotFoundException {
+    private String[] parseLine(String str) throws IncorrectCPTStringFormat {
         Matcher matcher = this.filePattern.matcher(str);
         if (!matcher.matches()) {
             throw new IncorrectCPTStringFormat();
         }
 
-        String treeStructure = matcher.group(1);
-        ArrayList<String[]> labels = this.getLabelsFromConfigurations(matcher.group(2));
+        return new String[]{matcher.group(1), matcher.group(2)};
+    }
+
+    private CPTNode parseString(String treeStructure, ArrayList<String> configurations) throws IncorrectCPTStringFormat, RuleNotFoundException {
+
+        ArrayList<String[]> labels = this.getLabelsFromConfigurations(configurations);
         labelsStack.addAll(labels);
         StringBuilder currentNodeName = new StringBuilder();
 
@@ -148,14 +157,25 @@ public class CPTParser {
         }
     }
 
-    private ArrayList<String[]> getLabelsFromConfigurations(String configsStr) {
+    private ArrayList<String> getConfigurations(String configsStr) {
         // arraylist of all configurations
-        ArrayList<String[]> configs = new ArrayList<>();
-        Matcher matcher = this.labelsPattern.matcher(configsStr);
+        ArrayList<String> configurations = new ArrayList<>();
+        Matcher matcher = this.configPattern.matcher(configsStr);
 
         while (matcher.find()) {
-            String aLabel = matcher.group(1).replace(" ", "");
-            configs.add(aLabel.split(","));
+            String aConfig = matcher.group(1).replace(" ", "");
+            configurations.add(aConfig);
+        }
+
+        return configurations;
+    }
+
+    private ArrayList<String[]> getLabelsFromConfigurations(ArrayList<String> configsArray) {
+        // arraylist of all configurations
+        ArrayList<String[]> configs = new ArrayList<>();
+
+        for (String config : configsArray) {
+            configs.add(config.split(","));
         }
 
         // arraylist of labels, one for each node

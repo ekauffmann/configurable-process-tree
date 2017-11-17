@@ -1,14 +1,15 @@
 package org.processmining.configurableprocesstree.cptimpl.nodes;
 
 import com.mxgraph.view.mxGraph;
+import org.processmining.configurableprocesstree.parser.CPTParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCPTNode implements CPTNode {
-    private String name;
-    private String[] label;
-    private List<CPTNode> children;
+public abstract class AbstractCPTNode implements CPTNode{
+    String name;
+    String[] label;
+    List<CPTNode> children;
 
     public AbstractCPTNode(String name) {
         this.name = name;
@@ -63,5 +64,53 @@ public abstract class AbstractCPTNode implements CPTNode {
             graph.insertEdge(parent, null, "", currentNode, childNode);
         }
         return currentNode;
+    }
+
+    @Override
+    public boolean isConsistent() {
+        if (this.children.isEmpty()) {
+            return false;
+        } else {
+            for (CPTNode child : this.children) {
+                if (!child.isConsistent()) return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String structureTextRepresentation() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.name);
+        stringBuilder.append("(");
+        for(CPTNode child : this.children) {
+            stringBuilder.append(child.structureTextRepresentation());
+            stringBuilder.append(", ");
+        }
+
+        if (!this.children.isEmpty()) {
+            // delete last ',' and ' '
+            stringBuilder = stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        }
+
+        stringBuilder.append(")");
+
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int numberOfNodes() {
+        // self
+        int counter = 1;
+        for (CPTNode child : children) {
+            counter += child.numberOfNodes();
+        }
+
+        return counter;
+    }
+
+    @Override
+    public CPTNode applyConfiguration(int index) {
+        return this;
     }
 }

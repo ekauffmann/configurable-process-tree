@@ -12,4 +12,8 @@ public interface CPTNode {
     void addChild(CPTNode child);
     void addChildren(List<CPTNode> children);
     Object addToGraphModel(mxGraph graph, Object parent);
+    boolean isConsistent();
+    String structureTextRepresentation();
+    int numberOfNodes();
+    CPTNode applyConfiguration(int index);
 }

@@ -1,6 +1,7 @@
 package org.processmining.configurableprocesstree.importing;
 
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
+import org.processmining.configurableprocesstree.exceptions.InconsistentCPTException;
 import org.processmining.configurableprocesstree.parser.CPTParser;
 import org.processmining.configurableprocesstree.parser.nodefactories.*;
 import org.processmining.configurableprocesstree.parser.predicates.*;
@@ -25,10 +26,12 @@ import java.util.HashMap;
 public class CPTImportPlugin extends AbstractImportPlugin {
     @Override
     protected ConfigurableProcessTree importFromStream(PluginContext context, InputStream inputStream, String filename, long fileSizeInBytes) throws Exception {
-        context.getFutureResult(0).setLabel("Configurable Process Tree imported from " + filename);
+        context.getFutureResult(0).setLabel(filename);
 
         CPTParser parser = new CPTParser(buildRules());
-        return parser.parseTreeFromFile(inputStream, filename);
+        ConfigurableProcessTree cpt = parser.parseTreeFromFile(inputStream, filename);
+        if (!cpt.isConsistent()) throw new InconsistentCPTException();
+        return cpt;
     }
 
     private HashMap<Predicate, NodeFactory> buildRules() {
