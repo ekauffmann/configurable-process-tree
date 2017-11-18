@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Plugin(
-    name = "Export Configurable Process Tree",
+    name = "Export Configurable Process Tree as svg",
     parameterLabels = { "Configurable Process Tree" , "File" },
     returnLabels = {},
     returnTypes = {}, userAccessible = true
@@ -30,7 +30,7 @@ import java.io.IOException;
     description = "Configurable Process Tree visualization (.svg)",
     extension = "svg"
 )
-public class CPTExportPlugin {
+public class ExportCPTAsSvgPlugin {
     @UITopiaVariant(
             affiliation = "Universidad de Chile",
             author = "Elisa Kauffmann F.",

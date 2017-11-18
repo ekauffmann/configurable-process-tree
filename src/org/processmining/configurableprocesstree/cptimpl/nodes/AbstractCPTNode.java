@@ -5,6 +5,7 @@ import org.processmining.configurableprocesstree.parser.CPTParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractCPTNode implements CPTNode{
     String name;
@@ -32,12 +33,21 @@ public abstract class AbstractCPTNode implements CPTNode{
         this.label = label;
     }
 
+    // for visualization
     @Override
     public String toString() {
+        if (this.label.length == 1 && "-".equals(this.label[0])) {
+            return this.name;
+        }
+
         StringBuilder builder = new StringBuilder();
+        builder.append("[");
         for(String s : this.label) {
             builder.append(s);
+            builder.append(", ");
         }
+        builder = builder.delete(builder.length() - 2, builder.length());
+        builder.append("]");
         return this.name + "\n" + builder.toString();
     }
 

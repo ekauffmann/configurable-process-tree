@@ -21,12 +21,10 @@ public class ConfigurableProcessTree {
     public ConfigurableProcessTree(CPTNode root, String name) {
         // build default empty configuration
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
         for (int i = 0; i < root.numberOfNodes() - 1; i++) {
             stringBuilder.append("-,");
         }
         stringBuilder.append("-");
-        stringBuilder.append("]");
 
         ArrayList<String> configs = new ArrayList<>();
         configs.add(stringBuilder.toString());
@@ -90,7 +88,7 @@ public class ConfigurableProcessTree {
         stringBuilder.append("[");
         for(String config : this.configurations) {
             stringBuilder.append("[");
-            stringBuilder.append(config);
+            stringBuilder.append(config.replace(",", ", "));
             stringBuilder.append("]");
         }
         stringBuilder.append("]");
