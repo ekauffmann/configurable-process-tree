@@ -61,7 +61,6 @@ public class ConfigurableProcessTree {
         vertexStyle.put(mxConstants.STYLE_FILLCOLOR, "#c4c4c4");
         vertexStyle.put(mxConstants.STYLE_FONTCOLOR, "black");
         vertexStyle.put(mxConstants.STYLE_SPACING, "5");
-        vertexStyle.put(mxConstants.STYLE_SOURCE_PERIMETER_SPACING, -500);
 
         graph.getModel().beginUpdate();
         try {
@@ -133,7 +132,9 @@ public class ConfigurableProcessTree {
                     graph.getModel().endUpdate();
                 }
             }
-            graph.updateCellSize(c);
+            else if (cell.isVertex()) {
+                graph.updateCellSize(c);
+            }
         }
     }
 }
