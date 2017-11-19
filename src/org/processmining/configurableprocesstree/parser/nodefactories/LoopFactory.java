@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public class LoopFactory implements NodeFactory {
     @Override
     public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
-        Loop loopNode = new Loop();
-        loopNode.setLabel(label);
-        loopNode.addChildren(children);
-        return loopNode;
+        return new Loop(name, label, children);
     }
 }

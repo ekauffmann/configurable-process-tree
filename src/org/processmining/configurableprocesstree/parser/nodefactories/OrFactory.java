@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public class OrFactory implements NodeFactory {
     @Override
     public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
-        Or orNode = new Or();
-        orNode.setLabel(label);
-        orNode.addChildren(children);
-        return orNode;
+        return new Or(name, label, children);
     }
 }

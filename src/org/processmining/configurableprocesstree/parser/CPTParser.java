@@ -9,8 +9,10 @@ import org.processmining.configurableprocesstree.exceptions.RuleNotFoundExceptio
 import org.processmining.configurableprocesstree.parser.nodefactories.NodeFactory;
 import org.processmining.configurableprocesstree.parser.predicates.Predicate;
 
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;

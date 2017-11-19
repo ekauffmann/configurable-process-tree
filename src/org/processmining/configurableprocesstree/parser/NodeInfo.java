@@ -1,7 +1,5 @@
 package org.processmining.configurableprocesstree.parser;
 
-import java.util.Stack;
-
 public class NodeInfo {
     private String name;
     private String[] label;

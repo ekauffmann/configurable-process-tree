@@ -1,6 +1,5 @@
 package org.processmining.configurableprocesstree.visualizer;
 
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
@@ -21,7 +20,6 @@ public class CPTVisualizer {
     public JComponent visualize(UIPluginContext context, ConfigurableProcessTree cpt) {
         JFrame frame = new JFrame();
         mxGraph graph = cpt.buildMxGraph();
-
         mxGraphComponent graphComponent = new mxGraphComponent(graph);
         graphComponent.setToolTips(true);
         graphComponent.setConnectable(false);

@@ -1,10 +1,14 @@
 package org.processmining.configurableprocesstree.cptimpl;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class ConfigurableProcessTree {
@@ -47,6 +51,18 @@ public class ConfigurableProcessTree {
 
         Object parent = graph.getDefaultParent();
 
+        Map<String, Object> edgeStyle = graph.getStylesheet().getDefaultEdgeStyle();
+        edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "black");
+        edgeStyle.put(mxConstants.STYLE_FILLCOLOR, "black");
+
+        Map<String, Object> vertexStyle = graph.getStylesheet().getDefaultVertexStyle();
+        vertexStyle.put(mxConstants.STYLE_ROUNDED, "1");
+        vertexStyle.put(mxConstants.STYLE_STROKECOLOR, "black");
+        vertexStyle.put(mxConstants.STYLE_FILLCOLOR, "#c4c4c4");
+        vertexStyle.put(mxConstants.STYLE_FONTCOLOR, "black");
+        vertexStyle.put(mxConstants.STYLE_SPACING, "5");
+        vertexStyle.put(mxConstants.STYLE_SOURCE_PERIMETER_SPACING, -500);
+
         graph.getModel().beginUpdate();
         try {
             this.root.addToGraphModel(graph, parent);
@@ -54,9 +70,13 @@ public class ConfigurableProcessTree {
             graph.getModel().endUpdate();
         }
 
+
         mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         layout.execute(graph.getDefaultParent());
+        layout.setDisableEdgeStyle(false);
 
+        graph.setAutoSizeCells(true);
+        straightenEdgesAndResizeCells(graph);
         graph.setCellsEditable(false);
         graph.setCellsSelectable(false);
         graph.setCellsLocked(true);
@@ -93,5 +113,27 @@ public class ConfigurableProcessTree {
         }
         stringBuilder.append("]");
         return stringBuilder.toString();
+    }
+
+    private void straightenEdgesAndResizeCells(mxGraph graph) {
+        graph.clearSelection();
+        graph.selectAll();
+        Object[] cells = graph.getSelectionCells();
+
+        for (Object c : cells) {
+
+            mxCell cell = (mxCell) c;
+            if (cell.isEdge()) {
+                graph.getModel().beginUpdate();
+                try {
+                    mxGeometry geometry = (mxGeometry) graph.getModel().getGeometry(cell).clone();
+                    geometry.setPoints(null);
+                    graph.getModel().setGeometry(cell, geometry);
+                } finally {
+                    graph.getModel().endUpdate();
+                }
+            }
+            graph.updateCellSize(c);
+        }
     }
 }

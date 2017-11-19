@@ -1,8 +1,10 @@
 package org.processmining.configurableprocesstree.cptimpl.nodes;
 
+import java.util.ArrayList;
+
 public class Loop extends AbstractCPTNode {
-    public Loop() {
-        super("LOOP");
+    public Loop(String name, String[] label, ArrayList<CPTNode> children) {
+        super("LOOP", "\u27F3", label, children);
     }
 
     @Override

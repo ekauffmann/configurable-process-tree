@@ -1,25 +1,25 @@
 package org.processmining.configurableprocesstree.cptimpl.nodes;
 
 import com.mxgraph.view.mxGraph;
-import org.processmining.configurableprocesstree.parser.CPTParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class AbstractCPTNode implements CPTNode{
     String name;
+    String symbol;
     String[] label;
     List<CPTNode> children;
 
-    public AbstractCPTNode(String name) {
-        this.name = name;
-        this.label = new String[]{};
-        this.children = new ArrayList<>();
+    AbstractCPTNode(String name, String[] label) {
+        this(name, name, label, new ArrayList<>());
     }
-
-    public AbstractCPTNode(String name, String[] label, ArrayList<CPTNode> children) {
+    AbstractCPTNode(String name, String symbol, String[] label) {
+        this(name, symbol, label, new ArrayList<>());
+    }
+    AbstractCPTNode(String name, String symbol, String[] label, ArrayList<CPTNode> children) {
         this.name = name;
+        this.symbol = symbol;
         this.label = label;
         this.children = children;
     }
@@ -36,19 +36,18 @@ public abstract class AbstractCPTNode implements CPTNode{
     // for visualization
     @Override
     public String toString() {
+        // do not show label if it is configured
         if (this.label.length == 1 && "-".equals(this.label[0])) {
-            return this.name;
+            return this.symbol;
         }
 
         StringBuilder builder = new StringBuilder();
-        builder.append("[");
         for(String s : this.label) {
             builder.append(s);
             builder.append(", ");
         }
         builder = builder.delete(builder.length() - 2, builder.length());
-        builder.append("]");
-        return this.name + "\n" + builder.toString();
+        return this.symbol + "\n" + builder.toString();
     }
 
     @Override

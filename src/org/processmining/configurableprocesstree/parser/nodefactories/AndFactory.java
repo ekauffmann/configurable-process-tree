@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public class AndFactory implements NodeFactory {
     @Override
     public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
-        And andNode = new And();
-        andNode.setLabel(label);
-        andNode.addChildren(children);
-        return andNode;
+        return new And(name, label, children);
     }
 }

@@ -2,8 +2,6 @@ package org.processmining.configurableprocesstree.exporting;
 
 import com.mxgraph.canvas.mxICanvas;
 import com.mxgraph.canvas.mxSvgCanvas;
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxDomUtils;
 import com.mxgraph.util.mxUtils;
@@ -15,7 +13,6 @@ import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
-import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,23 +37,7 @@ public class ExportCPTAsSvgPlugin {
             requiredParameterLabels = { 0, 1 }
             )
     public void export(PluginContext context, ConfigurableProcessTree cpt, File file) throws IOException {
-        mxGraph graph = new mxGraph();
-
-        Object parent = graph.getDefaultParent();
-
-        graph.getModel().beginUpdate();
-        try {
-            cpt.getRoot().addToGraphModel(graph, parent);
-        } finally {
-            graph.getModel().endUpdate();
-        }
-
-        mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-        layout.execute(graph.getDefaultParent());
-
-        graph.setCellsEditable(false);
-        graph.setCellsSelectable(true);
-        graph.setCellsLocked(true);
+        mxGraph graph = cpt.buildMxGraph();
 
         mxSvgCanvas canvas = (mxSvgCanvas) mxCellRenderer
                 .drawCells(graph, null, 1, null,

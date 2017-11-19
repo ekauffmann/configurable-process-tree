@@ -8,9 +8,6 @@ import java.util.ArrayList;
 public class SeqFactory implements NodeFactory {
     @Override
     public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
-        Seq seqNode = new Seq();
-        seqNode.setLabel(label);
-        seqNode.addChildren(children);
-        return seqNode;
+        return new Seq(name, label, children);
     }
 }

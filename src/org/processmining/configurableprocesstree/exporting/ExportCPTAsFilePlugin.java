@@ -1,20 +1,11 @@
 package org.processmining.configurableprocesstree.exporting;
 
-import com.mxgraph.canvas.mxICanvas;
-import com.mxgraph.canvas.mxSvgCanvas;
-import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
-import com.mxgraph.util.mxCellRenderer;
-import com.mxgraph.util.mxDomUtils;
-import com.mxgraph.util.mxUtils;
-import com.mxgraph.util.mxXmlUtils;
-import com.mxgraph.view.mxGraph;
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
 import org.processmining.contexts.uitopia.annotations.UIExportPlugin;
 import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
 import org.processmining.framework.plugin.PluginContext;
 import org.processmining.framework.plugin.annotations.Plugin;
 import org.processmining.framework.plugin.annotations.PluginVariant;
-
 
 import java.io.File;
 import java.io.FileWriter;
