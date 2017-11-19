@@ -1,10 +1,4 @@
-import com.mxgraph.canvas.mxICanvas;
-import com.mxgraph.canvas.mxSvgCanvas;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxCellRenderer;
-import com.mxgraph.util.mxDomUtils;
-import com.mxgraph.util.mxUtils;
-import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
 import org.processmining.configurableprocesstree.exceptions.EmptyFileException;
@@ -12,30 +6,27 @@ import org.processmining.configurableprocesstree.exceptions.IncorrectCPTStringFo
 import org.processmining.configurableprocesstree.exceptions.MoreThanOneLineFileException;
 import org.processmining.configurableprocesstree.exceptions.RuleNotFoundException;
 import org.processmining.configurableprocesstree.parser.CPTParser;
-import org.processmining.configurableprocesstree.parser.NodeInfo;
-import org.processmining.configurableprocesstree.parser.nodefactories.*;
+import org.processmining.configurableprocesstree.parser.factories.*;
 import org.processmining.configurableprocesstree.parser.predicates.*;
 
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Asdf {
     public static void main(String[] args) throws IOException, EmptyFileException, MoreThanOneLineFileException, IncorrectCPTStringFormat, RuleNotFoundException {
-        HashMap<Predicate, NodeFactory> rules = new HashMap<>();
+        HashMap<Predicate, CPTElementFactory> rules = new HashMap<>();
         rules.put(new AndPredicate(), new AndFactory());
         rules.put(new LoopPredicate(), new LoopFactory());
         rules.put(new OrPredicate(), new OrFactory());
         rules.put(new SeqPredicate(), new SeqFactory());
         rules.put(new TaskPredicate(), new TaskFactory());
         rules.put(new XorPredicate(), new XorFactory());
+        rules.put(new NoConfigurationPredicate(), new NoConfigurationFactory());
+        rules.put(new BlockedPredicate(), new BlockedFactory());
+        rules.put(new HiddenPredicate(), new HiddenFactory());
         CPTParser parser = new CPTParser(rules);
 
         String filename = "/home/elisa/Documents/F/text-input-examples/ejemplo_memoria.cpt";

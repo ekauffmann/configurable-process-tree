@@ -3,7 +3,7 @@ package org.processmining.configurableprocesstree.importing;
 import org.processmining.configurableprocesstree.cptimpl.ConfigurableProcessTree;
 import org.processmining.configurableprocesstree.exceptions.InconsistentCPTException;
 import org.processmining.configurableprocesstree.parser.CPTParser;
-import org.processmining.configurableprocesstree.parser.nodefactories.*;
+import org.processmining.configurableprocesstree.parser.factories.*;
 import org.processmining.configurableprocesstree.parser.predicates.*;
 import org.processmining.contexts.uitopia.annotations.UIImportPlugin;
 import org.processmining.framework.abstractplugins.AbstractImportPlugin;
@@ -34,14 +34,17 @@ public class CPTImportPlugin extends AbstractImportPlugin {
         return cpt;
     }
 
-    private HashMap<Predicate, NodeFactory> buildRules() {
-        HashMap<Predicate, NodeFactory> rules = new HashMap<>();
+    private HashMap<Predicate, CPTElementFactory> buildRules() {
+        HashMap<Predicate, CPTElementFactory> rules = new HashMap<>();
         rules.put(new AndPredicate(), new AndFactory());
         rules.put(new LoopPredicate(), new LoopFactory());
         rules.put(new OrPredicate(), new OrFactory());
         rules.put(new SeqPredicate(), new SeqFactory());
         rules.put(new TaskPredicate(), new TaskFactory());
         rules.put(new XorPredicate(), new XorFactory());
+        rules.put(new NoConfigurationPredicate(), new NoConfigurationFactory());
+        rules.put(new BlockedPredicate(), new BlockedFactory());
+        rules.put(new HiddenPredicate(), new HiddenFactory());
 
         return rules;
     }

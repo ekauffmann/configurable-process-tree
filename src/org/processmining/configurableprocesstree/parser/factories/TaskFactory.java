@@ -1,13 +1,18 @@
-package org.processmining.configurableprocesstree.parser.nodefactories;
+package org.processmining.configurableprocesstree.parser.factories;
 
 import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
 import org.processmining.configurableprocesstree.cptimpl.nodes.Task;
 
 import java.util.ArrayList;
 
-public class TaskFactory implements NodeFactory {
+public class TaskFactory implements CPTElementFactory {
     @Override
     public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
         return new Task(name, label, children);
+    }
+
+    @Override
+    public String nameToSymbol(String name) {
+        return "";
     }
 }

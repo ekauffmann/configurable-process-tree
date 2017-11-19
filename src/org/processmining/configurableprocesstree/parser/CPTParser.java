@@ -6,7 +6,7 @@ import org.processmining.configurableprocesstree.exceptions.EmptyFileException;
 import org.processmining.configurableprocesstree.exceptions.IncorrectCPTStringFormat;
 import org.processmining.configurableprocesstree.exceptions.MoreThanOneLineFileException;
 import org.processmining.configurableprocesstree.exceptions.RuleNotFoundException;
-import org.processmining.configurableprocesstree.parser.nodefactories.NodeFactory;
+import org.processmining.configurableprocesstree.parser.factories.CPTElementFactory;
 import org.processmining.configurableprocesstree.parser.predicates.Predicate;
 
 import java.io.BufferedReader;
@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CPTParser {
-    private HashMap<Predicate, NodeFactory> rules;
+    private HashMap<Predicate, CPTElementFactory> rules;
     private Pattern filePattern;
     private Pattern configPattern;
     private Stack<NodeInfo> nodeInfos;
@@ -33,7 +33,7 @@ public class CPTParser {
     private char nodesSpaceSeparator = " ".charAt(0);
     private char leafNameStart = ":".charAt(0);
 
-    public CPTParser(HashMap<Predicate, NodeFactory> rules) {
+    public CPTParser(HashMap<Predicate, CPTElementFactory> rules) {
         this.rules = rules;
         this.nodeInfos = new Stack<>();
         this.labelsStack= new Stack<>();
@@ -172,7 +172,7 @@ public class CPTParser {
         return configurations;
     }
 
-    private ArrayList<String[]> getLabelsFromConfigurations(ArrayList<String> configsArray) {
+    private ArrayList<String[]> getLabelsFromConfigurations(ArrayList<String> configsArray) throws RuleNotFoundException {
         // arraylist of all configurations
         ArrayList<String[]> configs = new ArrayList<>();
 
@@ -196,7 +196,7 @@ public class CPTParser {
                 int auxLabelIndex = 0;
                 // iterate through all configs, getting the element at the i-th position for the i-th node (labelIndex-th node)
                 for (String[] config : configs) {
-                    label[auxLabelIndex] = config[labelIndex];
+                    label[auxLabelIndex] = parseLabel(config[labelIndex]);
                     auxLabelIndex++;
                 }
                 labels.add(label);
@@ -217,5 +217,19 @@ public class CPTParser {
         if (node == null) throw new RuleNotFoundException(name);
 
         return node;
+    }
+
+    private String parseLabel(String name) throws RuleNotFoundException {
+        String symbol = null;
+
+        for (Predicate predicate : rules.keySet()) {
+            if (predicate.checkPredicate(name)) {
+                symbol = rules.get(predicate).nameToSymbol(name);
+                break;
+            }
+        }
+        if (symbol == null) throw new RuleNotFoundException(name);
+
+        return symbol;
     }
 }
