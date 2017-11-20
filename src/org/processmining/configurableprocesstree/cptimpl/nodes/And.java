@@ -10,4 +10,9 @@ public class And extends AbstractCPTNode {
     public And() {
         super("AND", "\u2227", new ArrayList<>(), new ArrayList<>());
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new And();
+    }
 }

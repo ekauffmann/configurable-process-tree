@@ -10,4 +10,9 @@ public class Or extends AbstractCPTNode {
     public Or() {
         super("OR", "\u2228", new ArrayList<>(), new ArrayList<>());
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Or();
+    }
 }

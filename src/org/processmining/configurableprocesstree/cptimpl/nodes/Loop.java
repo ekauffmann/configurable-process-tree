@@ -14,4 +14,9 @@ public class Loop extends AbstractCPTNode {
     public boolean isConsistent() {
         return (this.children.size() == 3) && super.isConsistent();
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Loop();
+    }
 }

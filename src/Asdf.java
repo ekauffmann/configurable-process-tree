@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Asdf {
@@ -34,6 +35,8 @@ public class Asdf {
         ConfigurableProcessTree cpt = parser.parseTreeFromFile(fileInputStream, filename);
 
         JFrame frame = new JFrame();
+        ArrayList<ConfigurableProcessTree> configs = cpt.configure();
+//        mxGraph graph = configs.get(1).buildMxGraph();
         mxGraph graph = cpt.buildMxGraph();
         mxGraphComponent graphComponent = new mxGraphComponent(graph);
         graphComponent.setToolTips(true);

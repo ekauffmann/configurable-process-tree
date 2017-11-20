@@ -18,4 +18,6 @@ public interface CPTNode {
     String structureTextRepresentation();
     int numberOfNodes();
     CPTNode applyConfiguration(int index);
+    boolean doNotApplyConfig();
+    CPTNode newCleanDuplicate();
 }

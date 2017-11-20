@@ -2,6 +2,7 @@ package org.processmining.configurableprocesstree.cptimpl.nodes;
 
 import com.mxgraph.view.mxGraph;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,9 @@ public abstract class AbstractCPTNode implements CPTNode{
     }
 
     AbstractCPTNode(String name, String symbol, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
+        if (label.size() == 1) { // the node is configured
+            label = new ArrayList<>();
+        }
         this.name = name;
         this.symbol = symbol;
         this.label = label;
@@ -39,7 +43,7 @@ public abstract class AbstractCPTNode implements CPTNode{
     @Override
     public String toString() {
         // do not display label if it is configured
-        if (this.label.size() == 1 && "-".equals(this.label.get(0).getSymbol())) {
+        if (this.label.isEmpty()) {
             return this.getSymbol();
         }
         StringBuilder builder = new StringBuilder();
@@ -121,6 +125,23 @@ public abstract class AbstractCPTNode implements CPTNode{
 
     @Override
     public CPTNode applyConfiguration(int index) {
-        return this;
+        // apply config to children first
+        ArrayList<CPTNode> newChildren = new ArrayList<>();
+        for (CPTNode child : this.children) {
+            newChildren.add(child.applyConfiguration(index));
+        }
+
+        CPTNode newNode = this.label.get(index);
+        if (newNode.doNotApplyConfig()) {
+            newNode = this.newCleanDuplicate();
+        }
+
+        newNode.addChildren(newChildren);
+        return newNode;
+    }
+
+    @Override
+    public boolean doNotApplyConfig() {
+        return false;
     }
 }

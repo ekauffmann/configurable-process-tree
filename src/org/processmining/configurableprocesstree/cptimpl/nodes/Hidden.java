@@ -10,4 +10,14 @@ public class Hidden extends AbstractCPTNode {
     public Hidden() {
         super("TAU", "\u03C4", new ArrayList<>(), new ArrayList<>());
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Hidden();
+    }
+
+    @Override
+    public boolean isConsistent() {
+        return true;
+    }
 }

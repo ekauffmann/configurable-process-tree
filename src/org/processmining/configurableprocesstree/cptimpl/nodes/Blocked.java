@@ -21,4 +21,9 @@ public class Blocked extends AbstractCPTNode {
         }
         return currentNode;
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Blocked();
+    }
 }

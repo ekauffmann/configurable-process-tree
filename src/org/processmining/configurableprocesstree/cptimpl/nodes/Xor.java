@@ -11,4 +11,8 @@ public class Xor extends AbstractCPTNode {
         super("XOR", "\u2715", new ArrayList<>(), new ArrayList<>());
     }
 
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Xor();
+    }
 }

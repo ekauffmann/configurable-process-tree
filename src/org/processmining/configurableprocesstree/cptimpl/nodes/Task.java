@@ -20,4 +20,9 @@ public class Task extends AbstractCPTNode {
     public String structureTextRepresentation() {
         return "LEAF:" + this.name;
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Task(this.name, new ArrayList<>(), new ArrayList<>());
+    }
 }

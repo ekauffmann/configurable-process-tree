@@ -10,4 +10,9 @@ public class Seq extends AbstractCPTNode {
     public Seq() {
         super("SEQ", "\u2192", new ArrayList<>(), new ArrayList<>());
     }
+
+    @Override
+    public CPTNode newCleanDuplicate() {
+        return new Seq();
+    }
 }
