@@ -7,12 +7,13 @@ import java.util.ArrayList;
 
 public class HiddenFactory implements CPTElementFactory {
     @Override
-    public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
+    public CPTNode buildNode(String name, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
         return new Hidden(name, label, children);
     }
 
     @Override
-    public String nameToSymbol(String name) {
-        return "H";
+    public CPTNode buildNodeForLabel() {
+        return new Hidden();
     }
+
 }

@@ -7,14 +7,12 @@ import java.util.ArrayList;
 
 public class OrFactory implements CPTElementFactory {
     @Override
-    public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
+    public CPTNode buildNode(String name, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
         return new Or(name, label, children);
     }
 
     @Override
-    public String nameToSymbol(String name) {
-        return "\u2228";
+    public CPTNode buildNodeForLabel() {
+        return new Or();
     }
-
-
 }

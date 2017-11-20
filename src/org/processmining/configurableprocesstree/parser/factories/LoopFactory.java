@@ -7,12 +7,14 @@ import java.util.ArrayList;
 
 public class LoopFactory implements CPTElementFactory {
     @Override
-    public CPTNode buildNode(String name, String[] label, ArrayList<CPTNode> children) {
+    public CPTNode buildNode(String name, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
         return new Loop(name, label, children);
     }
 
     @Override
-    public String nameToSymbol(String name) {
-        return "\u27F3";
+    public CPTNode buildNodeForLabel() {
+        return new Loop();
     }
+
+
 }

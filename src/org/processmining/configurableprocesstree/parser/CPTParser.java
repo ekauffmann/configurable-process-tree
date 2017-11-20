@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class CPTParser {
     private Pattern filePattern;
     private Pattern configPattern;
     private Stack<NodeInfo> nodeInfos;
-    private Stack<String[]> labelsStack;
+    private Stack<ArrayList<CPTNode>> labelsStack;
     private Stack<CPTNode> nodesStack;
     private char childrenStart = "(".charAt(0);
     private char childrenEnd = ")".charAt(0);
@@ -82,12 +83,12 @@ public class CPTParser {
 
     private CPTNode parseString(String treeStructure, ArrayList<String> configurations) throws IncorrectCPTStringFormat, RuleNotFoundException {
 
-        ArrayList<String[]> labels = this.getLabelsFromConfigurations(configurations);
+        ArrayList<ArrayList<CPTNode>> labels = this.getLabelsFromConfigurations(configurations);
         labelsStack.addAll(labels);
         StringBuilder currentNodeName = new StringBuilder();
 
         // dummy initial node info to prevent stack underflow at the end
-        nodeInfos.push(new NodeInfo("", new String[]{}));
+        nodeInfos.push(new NodeInfo("", new ArrayList<>()));
 
         for (int index = 0; index < treeStructure.length(); index++) {
             char c = treeStructure.charAt(index);
@@ -172,7 +173,7 @@ public class CPTParser {
         return configurations;
     }
 
-    private ArrayList<String[]> getLabelsFromConfigurations(ArrayList<String> configsArray) throws RuleNotFoundException {
+    private ArrayList<ArrayList<CPTNode>> getLabelsFromConfigurations(ArrayList<String> configsArray) throws RuleNotFoundException {
         // arraylist of all configurations
         ArrayList<String[]> configs = new ArrayList<>();
 
@@ -181,7 +182,7 @@ public class CPTParser {
         }
 
         // arraylist of labels, one for each node
-        ArrayList<String[]> labels = new ArrayList<>();
+        ArrayList<ArrayList<CPTNode>> labels = new ArrayList<>();
         int numberOfConfigs = configs.size();
 
         // if there are no configs specified in the file, return empty arraylist
@@ -191,13 +192,11 @@ public class CPTParser {
 
             for (int labelIndex = 0; labelIndex < numberOfNodes; labelIndex++ ) {
                 // each node label must have the same size. As many values as configs
-                String[] label = new String[numberOfConfigs];
+                ArrayList<CPTNode> label = new ArrayList<>();
 
-                int auxLabelIndex = 0;
                 // iterate through all configs, getting the element at the i-th position for the i-th node (labelIndex-th node)
                 for (String[] config : configs) {
-                    label[auxLabelIndex] = parseLabel(config[labelIndex]);
-                    auxLabelIndex++;
+                    label.add(parseLabel(config[labelIndex]));
                 }
                 labels.add(label);
             }
@@ -205,7 +204,7 @@ public class CPTParser {
         return labels;
     }
 
-    private CPTNode parseNode(String name, String[] label, ArrayList<CPTNode> children) throws RuleNotFoundException {
+    private CPTNode parseNode(String name, ArrayList<CPTNode> label, ArrayList<CPTNode> children) throws RuleNotFoundException {
         CPTNode node = null;
 
         for (Predicate predicate : rules.keySet()) {
@@ -219,17 +218,17 @@ public class CPTParser {
         return node;
     }
 
-    private String parseLabel(String name) throws RuleNotFoundException {
-        String symbol = null;
+    private CPTNode parseLabel(String name) throws RuleNotFoundException {
+        CPTNode label = null;
 
         for (Predicate predicate : rules.keySet()) {
             if (predicate.checkPredicate(name)) {
-                symbol = rules.get(predicate).nameToSymbol(name);
+                label = rules.get(predicate).buildNodeForLabel();
                 break;
             }
         }
-        if (symbol == null) throw new RuleNotFoundException(name);
+        if (label == null) throw new RuleNotFoundException(name);
 
-        return symbol;
+        return label;
     }
 }

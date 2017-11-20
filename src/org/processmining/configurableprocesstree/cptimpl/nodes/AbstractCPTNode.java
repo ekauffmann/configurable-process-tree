@@ -8,16 +8,14 @@ import java.util.List;
 public abstract class AbstractCPTNode implements CPTNode{
     String name;
     String symbol;
-    String[] label;
+    ArrayList<CPTNode> label;
     List<CPTNode> children;
 
-    AbstractCPTNode(String name, String[] label) {
+    AbstractCPTNode(String name, ArrayList<CPTNode> label) {
         this(name, name, label, new ArrayList<>());
     }
-    AbstractCPTNode(String name, String symbol, String[] label) {
-        this(name, symbol, label, new ArrayList<>());
-    }
-    AbstractCPTNode(String name, String symbol, String[] label, ArrayList<CPTNode> children) {
+
+    AbstractCPTNode(String name, String symbol, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
         this.name = name;
         this.symbol = symbol;
         this.label = label;
@@ -25,25 +23,28 @@ public abstract class AbstractCPTNode implements CPTNode{
     }
 
     @Override
+    public String getSymbol() {
+        return this.symbol;
+    }
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setLabel(String[] label) {
+    public void setLabel(ArrayList<CPTNode> label) {
         this.label = label;
     }
 
     // for visualization
     @Override
     public String toString() {
-        // do not show label if it is configured
-        if (this.label.length == 1 && "-".equals(this.label[0])) {
-            return this.symbol;
+        // do not display label if it is configured
+        if (this.label.size() == 1 && "-".equals(this.label.get(0).getSymbol())) {
+            return this.getSymbol();
         }
-
         StringBuilder builder = new StringBuilder();
-        for(String s : this.label) {
-            builder.append(s);
+        for(CPTNode c : this.label) {
+            builder.append(c.getSymbol());
             builder.append(", ");
         }
         builder = builder.delete(builder.length() - 2, builder.length());

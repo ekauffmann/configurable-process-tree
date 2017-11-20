@@ -3,8 +3,12 @@ package org.processmining.configurableprocesstree.cptimpl.nodes;
 import java.util.ArrayList;
 
 public class Task extends AbstractCPTNode {
-    public Task(String name, String[] label, ArrayList<CPTNode> children) {
+    public Task(String name, ArrayList<CPTNode> label, ArrayList<CPTNode> children) {
         super(name, label);
+    }
+
+    public Task() {
+        super("Task", new ArrayList<>());
     }
 
     @Override

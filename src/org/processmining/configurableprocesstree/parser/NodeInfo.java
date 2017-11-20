@@ -1,11 +1,15 @@
 package org.processmining.configurableprocesstree.parser;
 
+import org.processmining.configurableprocesstree.cptimpl.nodes.CPTNode;
+
+import java.util.ArrayList;
+
 public class NodeInfo {
     private String name;
-    private String[] label;
+    private ArrayList<CPTNode> label;
     private int numberOfChildren;
 
-    public NodeInfo(String name, String[] label) {
+    public NodeInfo(String name, ArrayList<CPTNode> label) {
         this.name = name;
         this.label = label;
         this.numberOfChildren = 0;
@@ -19,7 +23,7 @@ public class NodeInfo {
         return this.name;
     }
 
-    public String[] getLabel() {
+    public ArrayList<CPTNode> getLabel() {
         return this.label;
     }
     public int getNumberOfChildren() {
