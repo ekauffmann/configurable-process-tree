@@ -2,7 +2,6 @@ package org.processmining.configurableprocesstree.cptimpl.nodes;
 
 import com.mxgraph.view.mxGraph;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ public abstract class AbstractCPTNode implements CPTNode{
     String symbol;
     ArrayList<CPTNode> label;
     List<CPTNode> children;
+    boolean isRoot = false;
 
     AbstractCPTNode(String name, ArrayList<CPTNode> label) {
         this(name, name, label, new ArrayList<>());
@@ -45,7 +45,20 @@ public abstract class AbstractCPTNode implements CPTNode{
         // do not display label if it is configured
         if (this.label.isEmpty()) {
             return this.getSymbol();
+        } else {
+            boolean isAllNoConfig = true;
+            for (CPTNode config : this.label) {
+                if (!config.isNoConfig()) {
+                    isAllNoConfig = false;
+                    break;
+                }
+            }
+
+            if (isAllNoConfig) {
+                return this.getSymbol();
+            }
         }
+
         StringBuilder builder = new StringBuilder();
         for(CPTNode c : this.label) {
             builder.append(c.getSymbol());
@@ -58,6 +71,11 @@ public abstract class AbstractCPTNode implements CPTNode{
     @Override
     public List<CPTNode> getChildren() {
         return this.children;
+    }
+
+    @Override
+    public void setChildren(List<CPTNode> children) {
+        this.children = children;
     }
 
     @Override
@@ -135,13 +153,40 @@ public abstract class AbstractCPTNode implements CPTNode{
         if (newNode.doNotApplyConfig()) {
             newNode = this.newCleanDuplicate();
         }
-
+        newNode.setIsRoot(this.isRoot);
         newNode.addChildren(newChildren);
-        return newNode;
+
+        return newNode.propagateBlocking().reduceRedundantNodes();
+    }
+
+    @Override
+    public CPTNode reduceRedundantNodes() {
+        if (this.children.size() == 1) {
+            return this.children.get(0);
+        } else {
+            return this;
+        }
     }
 
     @Override
     public boolean doNotApplyConfig() {
         return false;
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return false;
+    }
+
+    public boolean isNoConfig() {
+        return false;
+    }
+
+    public boolean isRoot() {
+        return this.isRoot;
+    }
+
+    public void setIsRoot(boolean isRoot) {
+        this.isRoot = isRoot;
     }
 }

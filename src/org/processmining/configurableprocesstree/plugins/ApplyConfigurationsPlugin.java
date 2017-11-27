@@ -15,7 +15,7 @@ public class ApplyConfigurationsPlugin {
             parameterLabels = { "Configurable Process Tree" },
             returnLabels = {},
             returnTypes = {},
-            help = ""
+            help = "Produces and saves to workspace all configurations of a configurable process tree"
     )
     @UITopiaVariant(
             affiliation = "DCC, Universidad de Chile",
@@ -24,8 +24,12 @@ public class ApplyConfigurationsPlugin {
     )
     public void applyConfigurations(PluginContext context, ConfigurableProcessTree cpt){
         ArrayList<ConfigurableProcessTree> configurations = cpt.configure();
+        context.getProgress().setMinimum(1);
+        context.getProgress().setMaximum(configurations.size());
+        int counter = 1;
         for(ConfigurableProcessTree config : configurations) {
             context.getProvidedObjectManager().createProvidedObject(config.getName(), config, ConfigurableProcessTree.class, context);
+            context.getProgress().setValue(counter++);
             ProvidedObjectHelper.setFavorite(context, config);
         }
 

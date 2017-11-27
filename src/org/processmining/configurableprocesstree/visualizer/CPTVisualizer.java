@@ -14,8 +14,8 @@ public class CPTVisualizer {
     @Plugin(name = "Start Configurable Process Tree Visualizer",
             returnLabels = { "Configurable Process Tree Visualizer" },
             returnTypes = { JComponent.class },
-            parameterLabels = {	"Configurable Process Tree" },
-            userAccessible = true)
+            parameterLabels = {	"Configurable Process Tree" }
+            )
     @Visualizer
     public JComponent visualize(UIPluginContext context, ConfigurableProcessTree cpt) {
         JFrame frame = new JFrame();

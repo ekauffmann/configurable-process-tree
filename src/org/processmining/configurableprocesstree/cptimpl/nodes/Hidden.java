@@ -20,4 +20,10 @@ public class Hidden extends AbstractCPTNode {
     public boolean isConsistent() {
         return true;
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        return this;
+    }
+
 }

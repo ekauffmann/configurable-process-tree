@@ -25,4 +25,9 @@ public class Task extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new Task(this.name, new ArrayList<>(), new ArrayList<>());
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        return this;
+    }
 }

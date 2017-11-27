@@ -20,4 +20,14 @@ public class NoConfigNode extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new NoConfigNode();
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        return this;
+    }
+
+    @Override
+    public boolean isNoConfig() {
+        return true;
+    }
 }

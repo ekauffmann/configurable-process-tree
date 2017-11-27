@@ -13,10 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.EmptyStackException;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +80,7 @@ public class CPTParser {
     private CPTNode parseString(String treeStructure, ArrayList<String> configurations) throws IncorrectCPTStringFormat, RuleNotFoundException {
 
         ArrayList<ArrayList<CPTNode>> labels = this.getLabelsFromConfigurations(configurations);
+        Collections.reverse(labels);
         labelsStack.addAll(labels);
         StringBuilder currentNodeName = new StringBuilder();
 

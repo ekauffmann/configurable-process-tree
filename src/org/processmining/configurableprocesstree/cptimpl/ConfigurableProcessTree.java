@@ -18,6 +18,7 @@ public class ConfigurableProcessTree {
 
     public ConfigurableProcessTree(CPTNode root, String name, ArrayList<String> configurations) {
         this.root = root;
+        this.root.setIsRoot(true);
         this.name = name.replace(".cpt", "");
         this.configurations = configurations;
     }

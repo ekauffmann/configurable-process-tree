@@ -19,4 +19,23 @@ public class Loop extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new Loop();
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        if (this.children.get(0).isBlocked() || this.children.get(2).isBlocked()) {
+            if (this.isRoot()) {
+                return new Hidden();
+            } else {
+                return new Blocked();
+            }
+        } else if (this.children.get(1).isBlocked()) {
+            CPTNode newNode = new Seq();
+            newNode.setLabel(this.label);
+            newNode.addChild(this.children.get(0));
+            newNode.addChild(this.children.get(2));
+            return newNode;
+        } else {
+            return this;
+        }
+    }
 }

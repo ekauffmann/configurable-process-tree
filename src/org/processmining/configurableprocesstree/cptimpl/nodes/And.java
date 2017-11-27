@@ -15,4 +15,18 @@ public class And extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new And();
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        for (CPTNode child : this.children) {
+            if (child.isBlocked()) {
+                if (this.isRoot()) {
+                    return new Hidden();
+                } else {
+                    return new Blocked();
+                }
+            }
+        }
+        return this;
+    }
 }

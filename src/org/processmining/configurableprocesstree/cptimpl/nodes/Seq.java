@@ -15,4 +15,18 @@ public class Seq extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new Seq();
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        for (CPTNode child : this.children) {
+            if (child.isBlocked()) {
+                if (this.isRoot()) {
+                    return new Hidden();
+                } else {
+                    return new Blocked();
+                }
+            }
+        }
+        return this;
+    }
 }

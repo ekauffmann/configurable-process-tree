@@ -15,4 +15,23 @@ public class Xor extends AbstractCPTNode {
     public CPTNode newCleanDuplicate() {
         return new Xor();
     }
+
+    @Override
+    public CPTNode propagateBlocking() {
+        ArrayList<CPTNode> newChildren = new ArrayList<>();
+        for (CPTNode child : this.children) {
+            if (!child.isBlocked()) {
+                newChildren.add(child);
+            }
+        }
+        if (newChildren.size() > 0) {
+            this.setChildren(newChildren);
+            return this;
+        } else {
+            if (this.isRoot()) {
+                return new Hidden();
+            } else {
+                return new Blocked();}
+        }
+    }
 }
